@@ -1,0 +1,67 @@
+<!-- Sidebar Scroll Container -->
+<div id="sidebar-scroll">
+    <!-- Sidebar Content -->
+    <!-- Adding .sidebar-mini-hide to an element will hide it when the sidebar is in mini mode -->
+    <div class="sidebar-content">
+        <!-- Side Header -->
+        <div class="side-header side-content bg-logo align-center">
+            <button class="btn btn-link text-gray pull-right hidden-md hidden-lg" type="button" data-ng-click="oneui.settings.sidebarOpenXs = false" data-js-blur>
+                <i class="fa fa-times"></i>
+            </button>
+            <a class="h5 text-white logo-container" data-ui-sref="dashboard" data-js-blur>
+                <img src="./assets/img/logo.png" style="max-width: 110px;" alt="logo">
+            </a>
+        </div>
+        <!-- END Side Header -->
+
+        <!-- Side Content -->
+        <div class="side-content side-content-full remove-top-padding">
+            <!-- Main navigation functionality (data-js-main-nav attribute is initialized in js/directives.js) -->
+            <ul class="nav-main" data-js-main-nav>
+                <li class="nav-main-heading"><span class="sidebar-mini-hide">Manage</span></li>
+                <li class="gutter-tp">
+                    <a data-ui-sref="campaign" data-ui-sref-active="active">
+                        <span class="sidebar-mini-hide">Campaigns</span>
+                    </a>
+                    <a data-ui-sref="groups" data-ui-sref-active="active">
+                        <span class="sidebar-mini-hide">Groups</span>
+                    </a>
+                    <a data-ui-sref="sources" data-ui-sref-active="active">
+                        <span class="sidebar-mini-hide">Sources</span>
+                    </a>
+                    <a data-ui-sref="media" data-ui-sref-active="active">
+                        <span class="sidebar-mini-hide">Media</span>
+                    </a>
+                    <a data-ui-sref="apps" data-ui-sref-active="active">
+                        <span class="sidebar-mini-hide">Apps</span>
+                    </a>
+                    <a ng-click="logout()" data-ui-sref-active="active">
+                        <span class="sidebar-mini-hide">Logout</span>
+                    </a>
+                </li>
+            </ul>
+		</div>
+		
+		<!-- END Side Content -->
+		
+		<!-- Another content side -->
+
+		<div class="side-content side-content-full remove-top-padding">
+            <!-- Main navigation functionality (data-js-main-nav attribute is initialized in js/directives.js) -->
+            <ul class="nav-main" data-js-main-nav>
+                <li class="nav-main-heading"><span class="sidebar-mini-hide">Reporting</span></li>
+                <li class="gutter-tp">
+                    <a data-ui-sref="reports" data-ui-sref-active="active">
+                        <span class="sidebar-mini-hide">User Reports</span>
+                    </a>
+                    <a data-ui-sref="campaign" data-ui-sref-active="active">
+                        <span class="sidebar-mini-hide">Performance</span>
+                    </a>
+                </li>
+            </ul>
+		</div>
+
+    </div>
+    <!-- Sidebar Content -->
+</div>
+<!-- END Sidebar Scroll Container -->

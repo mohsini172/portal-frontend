@@ -1,0 +1,408 @@
+<!-- Page Header -->
+<div class="content bg-gray-lighter">
+	<ol class="breadcrumb">
+		<li ng-if="campaignName"><a href="#!/campaign" class="link-effect">Campaigns</a></li>
+		<li ng-if="campaignName"><a href="#!/campaign/groups/{{campaignId}}?title={{campaignName}}" class="link-effect">{{campaignName}}</a></li>
+		<li>{{groupName}}</li>
+	</ol>
+	<h1 class="page-heading push">
+			{{groupName}} : Messages
+	</h1>
+</div>
+<!-- END Page Header -->
+
+<!-- Page Content -->
+<div class="content">
+	<!-- Blocks API, functionality is initialized in js/app.js -> uiHelpers Factory -> uiBlocks() -->
+	<div class="row">
+		<div class="col-sm-12">
+			<div class="block">
+				<div class="block-content">
+					<form ng-submit="createMessage()">
+						<!--This is for toggle bulk adding-->
+						<div class="toggleBulk">
+							<div class="form-check form-check-inline">
+								<input class="form-check-input" type="radio" name="toggleBulkAdd" id="inlineRadio1" ng-model="singleForm" value="yes">
+								<label class="form-check-label" for="inlineRadio1">Single</label>
+							</div>
+							<div class="form-check form-check-inline">
+								<input class="form-check-input" type="radio" name="toggleBulkAdd" id="inlineRadio2" ng-model="singleForm" value="no">
+								<label class="form-check-label" for="inlineRadio2">Batch</label>
+							</div>
+						</div>
+						<!--Ending toggle here-->
+						<div ng-if="singleForm == 'yes'" class="row">
+							<div class="form-group col-xs-12 col-sm-6 col-md-5 col-lg-4">
+								<input required ng-model="messageData.headline" type="text" class="form-control" id="searchInput"
+								 aria-describedby="searchInput" placeholder="Headline">
+							</div>
+							<div class="form-group col-xs-12 col-sm-6 col-md-5 col-lg-4">
+								<input required ng-model="messageData.message" type="text" class="form-control" id="searchInput"
+								 aria-describedby="searchInput" placeholder="Message">
+							</div>
+						</div>
+						<div ng-if="singleForm =='no'" class="row">
+							<div class="form-group col-xs-12 col-sm-6 col-md-5 col-lg-4">
+								<input required ng-model="messageData.batchName" type="text" class="form-group form-control" id="searchInput"
+								 aria-describedby="searchInput" placeholder="Batch Name">
+								<textarea ng-model="messageData.headline" class="form-control" placeholder="One line per heading" rows="10"
+								 required></textarea>
+							</div>
+							<div class="form-group col-xs-12 col-sm-6 col-md-5 col-lg-4">
+								<input required ng-model="messageData.batchDesc" type="text" class="form-group form-control" id="searchInput"
+								 aria-describedby="searchInput" placeholder="Batch Description">
+								<textarea ng-model="messageData.message" class="form-control" placeholder="One line per message" rows="10"
+								 required></textarea>
+							</div>
+						</div>
+						<div class="row">
+							<div class="form-group form-group col-xs-12 col-sm-6 col-md-4 col-lg-3">
+								<select class="form-control" id="targeting" ng-model="messageData.icon" required>
+									<option disabled selected value="">Select Icon</option>
+									<optgroup label="Groups">
+										<option ng-repeat="group in mediaGroups" ng-if="group.mtype == 'Icon'" value="group-{{group._id}}">{{group.label}}</option>
+									</optgroup>
+									<optgroup label="Media">
+										<option ng-repeat="row in media" ng-if="row.type == 'Icons'">{{row.file}}</option>
+									</optgroup>
+								</select>
+							</div>
+							<div class="form-group form-group col-xs-12 col-sm-6 col-md-4 col-lg-3">
+								<select class="form-control" id="sources" ng-model="messageData.badge" required>
+									<option disabled selected value="">Select Badge</option>
+									<optgroup label="Groups">
+										<option ng-repeat="group in mediaGroups" ng-if="group.mtype == 'Badge'" value="group-{{group._id}}">{{group.label}}</option>
+									</optgroup>
+									<optgroup label="Media">
+										<option ng-repeat="row in media" ng-if="row.type == 'Badges'">{{row.file}}</option>
+									</optgroup>
+								</select>
+							</div>
+							<div class="form-group form-group col-xs-12 col-sm-6 col-md-4 col-lg-3">
+								<select class="form-control" id="apps" ng-model="messageData.image">
+									<option disabled selected value="">Select Image</option>
+									<option value="null">None</option>
+									<optgroup label="Groups">
+										<option ng-repeat="group in mediaGroups" ng-if="group.mtype == 'Image'" value="group-{{group._id}}">{{group.label}}</option>
+									</optgroup>
+									<optgroup label="Media">
+										<option ng-repeat="row in media" ng-if="row.type == 'Images'">{{row.file}}</option>
+									</optgroup>
+								</select>
+							</div>
+						</div>
+						<div class="row">
+							<div class="form-group col-xs-12 col-sm-6 col-md-5 col-lg-4">
+								<input ng-model="messageData.path" type="text" class="form-control" id="pathInput" aria-describedby="pathInput"
+								 placeholder="Path">
+							</div>
+						</div>
+						<div class="">
+							<button ng-if="!isEditing" type="submit" class="btn btn-minw btn-default">Add</button>
+							<button ng-if="isEditing" type="submit" class="btn btn-minw btn-default">Save</button>
+						</div>
+					</form>
+					<span class="row"></span>
+					<div id="DataTables_Table_0_wrapper" class="dataTables_wrapper form-inline dt-bootstrap no-footer">
+						<div class="row">
+							<div class="col-sm-12">
+								<table class="table table-bordered table-striped js-dataTable-simple dataTable no-footer" id="DataTables_Table_0"
+								 role="grid" aria-describedby="DataTables_Table_0_info">
+									<thead>
+										<tr role="row">
+											<th class="sorting" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1" colspan="1" aria-label="Name: activate to sort column ascending">Headline</th>
+											<th class="" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1" colspan="1" aria-label="Email: activate to sort column ascending">Message</th>
+											<th class="" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1" colspan="1" aria-label="Access: activate to sort column ascending">Icon</th>
+											<th class="" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1" colspan="1" aria-label="Access: activate to sort column ascending">Badge</th>
+											<th class="" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1" colspan="1" aria-label="Access: activate to sort column ascending">Image</th>
+											<th class="" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1" colspan="1" aria-label="Access: activate to sort column ascending">Status</th>
+											<th class="text-center sorting_disabled" rowspan="1" colspan="1" aria-label="Actions">Actions</th>
+										</tr>
+									</thead>
+									<tbody>
+										<tr role="row" class="odd" ng-repeat="message in messages">
+											<td class="font-w600">{{message.batch.name}}</td>
+											<td class="">{{message.batch.description}}</td>
+											<td class="">{{message.icon.isGroup?message.icon.reference.label:message.icon.id}}</td>
+											<td class="">{{message.badge.isGroup?message.badge.reference.label:message.badge.id}}</td>
+											<td class="">{{message.image.isGroup?message.image.reference.label:message.image.id}}</td>
+											<td class="">
+												<label style="margin: 0px;" class="css-input switch switch-sm switch-primary">
+													<input ng-model="statusModels[$index]" ng-init="statusModels[$index]=message.active" type="checkbox" checked="" ng-change="changeStatus(message._id, statusModels[$index])"><span></span>
+												</label>
+											</td>
+											<td class="text-center">
+												<span style="font-size: 12px;" data-toggle="modal" data-target="#modal-popout" ng-click="setTranslationId(message)">Translations</span>
+												|
+												<span style="font-size: 12px;cursor: pointer;" ng-click="enableEditing(message)">Edit</span> |
+												<span style="font-size: 12px; cursor: pointer" ng-click="deleteMessage(message._id)">Delete</span>
+											</td>
+										</tr>
+									</tbody>
+								</table>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<!-- END Blocks API -->
+
+
+	<!--Modal for translations-->
+
+	<div class="modal fade" id="modal-popout" tabindex="-1" role="dialog" aria-hidden="true" style="display: none;">
+		<div class="modal-dialog modal-dialog-popout">
+			<div class="modal-content">
+				<div class="block block-themed block-transparent remove-margin-b">
+					<div class="block-header bg-primary-dark">
+						<ul class="block-options">
+							<li>
+								<button class="btn btn-info" ng-click="translate()">Auto Translate</button>
+							</li>
+							<li>
+								<button data-dismiss="modal" type="button"><i class="si si-close"></i></button>
+							</li>
+						</ul>
+						<h3 class="block-title">Translations</h3>
+					</div>
+					<div class="block-content">
+						<form>
+							<div class="row">
+								<div class="col-sm-2">Arabic:</div>
+								<div class="form-group col-sm-5">
+									<textarea ng-if="singleForm != 'yes'" type="text" class="form-control" placeholder="Headline" rows="5"
+									 ng-model="translations.headlines.ar"></textarea>
+									<input ng-if="singleForm == 'yes'" type="text" class="form-control" placeholder="Headline" ng-model="translations.headlines.ar">
+								</div>
+								<div class="form-group col-sm-5">
+									<textarea ng-if="singleForm != 'yes'" type="text" class="form-control" placeholder="Message" rows="5" ng-model="translations.messages.ar"></textarea>
+									<input ng-if="singleForm == 'yes'" type="text" class="form-control" placeholder="Message" ng-model="translations.messages.ar">
+								</div>
+							</div>
+							<div class="row">
+								<div class="col-sm-2">Chinese:</div>
+								<div class="form-group col-sm-5">
+									<textarea ng-if="singleForm != 'yes'" type="text" class="form-control" placeholder="Headline" rows="5"
+									 ng-model="translations.headlines.zh"></textarea>
+									<input ng-if="singleForm == 'yes'" type="text" class="form-control" placeholder="Headline" ng-model="translations.headlines.zh">
+								</div>
+								<div class="form-group col-sm-5">
+									<textarea ng-if="singleForm != 'yes'" type="text" class="form-control" placeholder="Message" rows="5" ng-model="translations.messages.zh"></textarea>
+									<input ng-if="singleForm == 'yes'" type="text" class="form-control" placeholder="Message" ng-model="translations.messages.zh">
+								</div>
+							</div>
+							<div class="row">
+								<div class="col-sm-2">Czech:</div>
+								<div class="form-group col-sm-5">
+									<textarea ng-if="singleForm != 'yes'" type="text" class="form-control" placeholder="Headline" rows="5"
+									 ng-model="translations.headlines.cs"></textarea>
+									<input ng-if="singleForm == 'yes'" type="text" class="form-control" placeholder="Headline" ng-model="translations.headlines.cs">
+								</div>
+								<div class="form-group col-sm-5">
+									<textarea ng-if="singleForm != 'yes'" type="text" class="form-control" placeholder="Message" rows="5" ng-model="translations.messages.cs"></textarea>
+									<input ng-if="singleForm == 'yes'" type="text" class="form-control" placeholder="Message" ng-model="translations.messages.cs">
+								</div>
+							</div>
+							<div class="row">
+								<div class="col-sm-2">Danish:</div>
+								<div class="form-group col-sm-5">
+									<textarea ng-if="singleForm != 'yes'" type="text" class="form-control" placeholder="Headline" rows="5"
+									 ng-model="translations.headlines.da"></textarea>
+									<input ng-if="singleForm == 'yes'" type="text" class="form-control" placeholder="Headline" ng-model="translations.headlines.da">
+								</div>
+								<div class="form-group col-sm-5">
+									<textarea ng-if="singleForm != 'yes'" type="text" class="form-control" placeholder="Message" rows="5" ng-model="translations.messages.da"></textarea>
+									<input ng-if="singleForm == 'yes'" type="text" class="form-control" placeholder="Message" ng-model="translations.messages.da">
+								</div>
+							</div>
+							<div class="row">
+								<div class="col-sm-2">Dutch:</div>
+								<div class="form-group col-sm-5">
+									<textarea ng-if="singleForm != 'yes'" type="text" class="form-control" placeholder="Headline" rows="5"
+									 ng-model="translations.headlines.nl"></textarea>
+									<input ng-if="singleForm == 'yes'" type="text" class="form-control" placeholder="Headline" ng-model="translations.headlines.nl">
+								</div>
+								<div class="form-group col-sm-5">
+									<textarea ng-if="singleForm != 'yes'" type="text" class="form-control" placeholder="Message" rows="5" ng-model="translations.messages.nl"></textarea>
+									<input ng-if="singleForm == 'yes'" type="text" class="form-control" placeholder="Message" ng-model="translations.messages.nl">
+								</div>
+							</div>
+							<div class="row">
+								<div class="col-sm-2">Finnish:</div>
+								<div class="form-group col-sm-5">
+									<textarea ng-if="singleForm != 'yes'" type="text" class="form-control" placeholder="Headline" rows="5"
+									 ng-model="translations.headlines.fi"></textarea>
+									<input ng-if="singleForm == 'yes'" type="text" class="form-control" placeholder="Headline" ng-model="translations.headlines.fi">
+								</div>
+								<div class="form-group col-sm-5">
+									<textarea ng-if="singleForm != 'yes'" type="text" class="form-control" placeholder="Message" rows="5" ng-model="translations.messages.fi"></textarea>
+									<input ng-if="singleForm == 'yes'" type="text" class="form-control" placeholder="Message" ng-model="translations.messages.fi">
+								</div>
+							</div>
+							<div class="row">
+								<div class="col-sm-2">Hebrew:</div>
+								<div class="form-group col-sm-5">
+									<textarea ng-if="singleForm != 'yes'" type="text" class="form-control" placeholder="Headline" rows="5"
+									 ng-model="translations.headlines.he"></textarea>
+									<input ng-if="singleForm == 'yes'" type="text" class="form-control" placeholder="Headline" ng-model="translations.headlines.he">
+								</div>
+								<div class="form-group col-sm-5">
+									<textarea ng-if="singleForm != 'yes'" type="text" class="form-control" placeholder="Message" rows="5" ng-model="translations.messages.he"></textarea>
+									<input ng-if="singleForm == 'yes'" type="text" class="form-control" placeholder="Message" ng-model="translations.messages.he">
+								</div>
+							</div>
+							<div class="row">
+								<div class="col-sm-2">Indonesian:</div>
+								<div class="form-group col-sm-5">
+									<textarea ng-if="singleForm != 'yes'" type="text" class="form-control" placeholder="Headline" rows="5"
+									 ng-model="translations.headlines.id"></textarea>
+									<input ng-if="singleForm == 'yes'" type="text" class="form-control" placeholder="Headline" ng-model="translations.headlines.id">
+								</div>
+								<div class="form-group col-sm-5">
+									<textarea ng-if="singleForm != 'yes'" type="text" class="form-control" placeholder="Message" rows="5" ng-model="translations.messages.id"></textarea>
+									<input ng-if="singleForm == 'yes'" type="text" class="form-control" placeholder="Message" ng-model="translations.messages.id">
+								</div>
+							</div>
+							<div class="row">
+								<div class="col-sm-2">Japanese:</div>
+								<div class="form-group col-sm-5">
+									<textarea ng-if="singleForm != 'yes'" type="text" class="form-control" placeholder="Headline" rows="5"
+									 ng-model="translations.headlines.ja"></textarea>
+									<input ng-if="singleForm == 'yes'" type="text" class="form-control" placeholder="Headline" ng-model="translations.headlines.ja">
+								</div>
+								<div class="form-group col-sm-5">
+									<textarea ng-if="singleForm != 'yes'" type="text" class="form-control" placeholder="Message" rows="5" ng-model="translations.messages.ja"></textarea>
+									<input ng-if="singleForm == 'yes'" type="text" class="form-control" placeholder="Message" ng-model="translations.messages.ja">
+								</div>
+							</div>
+							<div class="row">
+								<div class="col-sm-2">Korean:</div>
+								<div class="form-group col-sm-5">
+									<textarea ng-if="singleForm != 'yes'" type="text" class="form-control" placeholder="Headline" rows="5"
+									 ng-model="translations.headlines.ko"></textarea>
+									<input ng-if="singleForm == 'yes'" type="text" class="form-control" placeholder="Headline" ng-model="translations.headlines.ko">
+								</div>
+								<div class="form-group col-sm-5">
+									<textarea ng-if="singleForm != 'yes'" type="text" class="form-control" placeholder="Message" rows="5" ng-model="translations.messages.ko"></textarea>
+									<input ng-if="singleForm == 'yes'" type="text" class="form-control" placeholder="Message" ng-model="translations.messages.ko">
+								</div>
+							</div>
+							<div class="row">
+								<div class="col-sm-2">Polish:</div>
+								<div class="form-group col-sm-5">
+									<textarea ng-if="singleForm != 'yes'" type="text" class="form-control" placeholder="Headline" rows="5"
+									 ng-model="translations.headlines.pl"></textarea>
+									<input ng-if="singleForm == 'yes'" type="text" class="form-control" placeholder="Headline" ng-model="translations.headlines.pl">
+								</div>
+								<div class="form-group col-sm-5">
+									<textarea ng-if="singleForm != 'yes'" type="text" class="form-control" placeholder="Message" rows="5" ng-model="translations.messages.pl"></textarea>
+									<input ng-if="singleForm == 'yes'" type="text" class="form-control" placeholder="Message" ng-model="translations.messages.pl">
+								</div>
+							</div>
+							<div class="row">
+								<div class="col-sm-2">Portuguese:</div>
+								<div class="form-group col-sm-5">
+									<textarea ng-if="singleForm != 'yes'" type="text" class="form-control" placeholder="Headline" rows="5"
+									 ng-model="translations.headlines.pt"></textarea>
+									<input ng-if="singleForm == 'yes'" type="text" class="form-control" placeholder="Headline" ng-model="translations.headlines.pt">
+								</div>
+								<div class="form-group col-sm-5">
+									<textarea ng-if="singleForm != 'yes'" type="text" class="form-control" placeholder="Message" rows="5" ng-model="translations.messages.pt"></textarea>
+									<input ng-if="singleForm == 'yes'" type="text" class="form-control" placeholder="Message" ng-model="translations.messages.pt">
+								</div>
+							</div>
+							<div class="row">
+								<div class="col-sm-2">Swedish:</div>
+								<div class="form-group col-sm-5">
+									<textarea ng-if="singleForm != 'yes'" type="text" class="form-control" placeholder="Headline" rows="5"
+									 ng-model="translations.headlines.sv"></textarea>
+									<input ng-if="singleForm == 'yes'" type="text" class="form-control" placeholder="Headline" ng-model="translations.headlines.sv">
+								</div>
+								<div class="form-group col-sm-5">
+									<textarea ng-if="singleForm != 'yes'" type="text" class="form-control" placeholder="Message" rows="5" ng-model="translations.messages.sv"></textarea>
+									<input ng-if="singleForm == 'yes'" type="text" class="form-control" placeholder="Message" ng-model="translations.messages.sv">
+								</div>
+							</div>
+							<div class="row">
+								<div class="col-sm-2">French:</div>
+								<div class="form-group col-sm-5">
+									<textarea ng-if="singleForm != 'yes'" type="text" class="form-control" placeholder="Headline" rows="5"
+									 ng-model="translations.headlines.fr"></textarea>
+									<input ng-if="singleForm == 'yes'" type="text" class="form-control" placeholder="Headline" ng-model="translations.headlines.fr">
+								</div>
+								<div class="form-group col-sm-5">
+									<textarea ng-if="singleForm != 'yes'" type="text" class="form-control" placeholder="Message" rows="5" ng-model="translations.messages.fr"></textarea>
+									<input ng-if="singleForm == 'yes'" type="text" class="form-control" placeholder="Message" ng-model="translations.messages.fr">
+								</div>
+							</div>
+							<div class="row">
+								<div class="col-sm-2">German:</div>
+								<div class="form-group col-sm-5">
+									<textarea ng-if="singleForm != 'yes'" type="text" class="form-control" placeholder="Headline" rows="5"
+									 ng-model="translations.headlines.de"></textarea>
+									<input ng-if="singleForm == 'yes'" type="text" class="form-control" placeholder="Headline" ng-model="translations.headlines.de">
+								</div>
+								<div class="form-group col-sm-5">
+									<textarea ng-if="singleForm != 'yes'" type="text" class="form-control" placeholder="Message" rows="5" ng-model="translations.messages.de"></textarea>
+									<input ng-if="singleForm == 'yes'" type="text" class="form-control" placeholder="Message" ng-model="translations.messages.de">
+								</div>
+							</div>
+							<div class="row">
+								<div class="col-sm-2">Italian:</div>
+								<div class="form-group col-sm-5">
+									<textarea ng-if="singleForm != 'yes'" type="text" class="form-control" placeholder="Headline" rows="5"
+									 ng-model="translations.headlines.it"></textarea>
+									<input ng-if="singleForm == 'yes'" type="text" class="form-control" placeholder="Headline" ng-model="translations.headlines.it">
+								</div>
+								<div class="form-group col-sm-5">
+									<textarea ng-if="singleForm != 'yes'" type="text" class="form-control" placeholder="Message" rows="5" ng-model="translations.messages.it"></textarea>
+									<input ng-if="singleForm == 'yes'" type="text" class="form-control" placeholder="Message" ng-model="translations.messages.it">
+								</div>
+							</div>
+							<div class="row">
+								<div class="col-sm-2">Russian:</div>
+								<div class="form-group col-sm-5">
+									<textarea ng-if="singleForm != 'yes'" type="text" class="form-control" placeholder="Headline" rows="5"
+									 ng-model="translations.headlines.ru"></textarea>
+									<input ng-if="singleForm == 'yes'" type="text" class="form-control" placeholder="Headline" ng-model="translations.headlines.ru">
+								</div>
+								<div class="form-group col-sm-5">
+									<textarea ng-if="singleForm != 'yes'" type="text" class="form-control" placeholder="Message" rows="5" ng-model="translations.messages.ru"></textarea>
+									<input ng-if="singleForm == 'yes'" type="text" class="form-control" placeholder="Message" ng-model="translations.messages.ru">
+								</div>
+							</div>
+							<div class="row">
+								<div class="col-sm-2">Spanish:</div>
+								<div class="form-group col-sm-5">
+									<textarea ng-if="singleForm != 'yes'" type="text" class="form-control" placeholder="Headline" rows="5"
+									 ng-model="translations.headlines.es"></textarea>
+									<input ng-if="singleForm == 'yes'" type="text" class="form-control" placeholder="Headline" ng-model="translations.headlines.es">
+								</div>
+								<div class="form-group col-sm-5">
+									<textarea ng-if="singleForm != 'yes'" type="text" class="form-control" placeholder="Message" rows="5" ng-model="translations.messages.es"></textarea>
+									<input ng-if="singleForm == 'yes'" type="text" class="form-control" placeholder="Message" ng-model="translations.messages.es">
+								</div>
+							</div>
+							<div class="row">
+								<div class="col-sm-2">Turkish:</div>
+								<div class="form-group col-sm-5">
+									<textarea ng-if="singleForm != 'yes'" type="text" class="form-control" placeholder="Headline" rows="5"
+									 ng-model="translations.headlines.tr"></textarea>
+									<input ng-if="singleForm == 'yes'" type="text" class="form-control" placeholder="Headline" ng-model="translations.headlines.tr">
+								</div>
+								<div class="form-group col-sm-5">
+									<textarea ng-if="singleForm != 'yes'" type="text" class="form-control" placeholder="Message" rows="5" ng-model="translations.messages.tr"></textarea>
+									<input ng-if="singleForm == 'yes'" type="text" class="form-control" placeholder="Message" ng-model="translations.messages.tr">
+								</div>
+							</div>
+						</form>
+					</div>
+				</div>
+				<div class="modal-footer">
+					<button class="btn btn-sm btn-default" type="button" data-dismiss="modal" ng-click="saveTranslations()">Save</button>
+				</div>
+			</div>
+		</div>
+	</div>

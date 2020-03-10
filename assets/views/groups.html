@@ -1,0 +1,79 @@
+<!-- Page Header -->
+<div class="content bg-gray-lighter">
+    <h1 class="page-heading push">
+        Groups
+    </h1>
+</div>
+<!-- END Page Header -->
+
+<!-- Page Content -->
+<div class="content">
+    <!-- Blocks API, functionality is initialized in js/app.js -> uiHelpers Factory -> uiBlocks() -->
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="block">
+                <div class="block-content">
+                    <form ng-submit="createGroup()">
+                        <div class="row">
+                            <div class="form-group form-group col-xs-12 col-sm-6 col-md-4 col-lg-3">
+                                <input ng-model="groupData.name" type="text" class="form-control" id="Source_Label" aria-describedby="Source_Label"
+                                    placeholder="Group Name">
+                            </div>
+                            <div class="form-group form-group col-xs-12 col-sm-6 col-md-5 col-lg-5">
+                                <input ng-model="groupData.campaignUrl" type="text" class="form-control" id="Source_Label" aria-describedby="Source_Label"
+                                    placeholder="Campaign URL">
+                            </div>
+                            <div class="col-xs-12 col-sm-6 col-md-3 col-lg-2">
+                                <button ng-if="!isEditing" type="submit" class="btn btn-minw btn-default">Add</button>
+                                <button ng-if="isEditing" type="submit" class="btn btn-minw btn-default">Save</button>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="form-group form-group col-xs-12 col-sm-6 col-md-4 col-lg-3">
+                                <input ng-model="groupData.category" type="text" class="form-control" id="Source_Label" aria-describedby="Source_Label"
+                                    placeholder="Group Category">
+                            </div>
+                        </div>
+                    </form>
+                    <span class="row"></span>
+                    <div id="DataTables_Table_0_wrapper" class="dataTables_wrapper form-inline dt-bootstrap no-footer">
+                        <div class="row">
+                            <div class="col-sm-12 overflow-x-auto">
+                                <table class="table table-bordered table-striped js-dataTable-simple dataTable no-footer" id="DataTables_Table_0" role="grid"
+                                    aria-describedby="DataTables_Table_0_info">
+                                    <thead>
+                                        <tr role="row">
+                                            <th class="sorting" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1" colspan="1" aria-label="Name: activate to sort column ascending"
+                                                style="width: 200px;">Group Name</th>
+                                            <th class="" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1" colspan="1" aria-label="Email: activate to sort column ascending"
+                                                style="width: 100px;">Campaign URL
+                                                </th>
+                                            <th class="" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1" colspan="1" aria-label="Category: activate to sort column ascending"
+                                                style="width: 100px;">Campaign Category
+                                                </th>
+                                            <th class="text-center sorting_disabled" style="width: 160px!important" rowspan="1" colspan="1" aria-label="Actions">Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr role="row" ng-repeat="group in groups">
+                                            <td class="font-w600">{{group.name}}</td>
+                                            <td class=""><a target="_blank" href="{{group.campaignUrl}}">View Link</a></td>
+                                            <td class="font-w600">{{group.category}}</td>
+                                            <td class="text-center" style="width: 160px;">
+                                                <a style="font-size: 12px;;color: inherit" href="#!/messages/{{group._id}}?group-title={{group.name}}">Messages</a>
+                                                |
+                                                <span style="font-size: 12px;cursor: pointer;" ng-click="enableEditing(group)">Edit</span>
+                                                |
+                                                <span style="font-size: 12px; cursor: pointer" ng-click="deleteGroup(group._id)">Delete</span>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- END Blocks API -->

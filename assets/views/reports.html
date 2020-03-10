@@ -1,0 +1,138 @@
+<!-- Page Header -->
+<div class="content bg-gray-lighter">
+	<h1 class="page-heading push">
+		Reporting
+	</h1>
+</div>
+<!-- END Page Header -->
+<!-- Page Content -->
+<div class="content">
+	<!-- Blocks API, functionality is initialized in js/app.js -> uiHelpers Factory -> uiBlocks() -->
+	<div class="row">
+		<div class="col-sm-12">
+			<div class="block">
+				<div class="block-content">
+					<div class="btn-group btn-group-lg">
+						<button ng-click="showing.type='apps'"
+							ng-class="{'btn-primary': showing.type == 'apps', 'btn-default': showing != 'apps'}"
+							type="button" class="btn">Apps</button>
+						<button ng-click="showing.type='daily'"
+							ng-class="{'btn-primary': showing.type == 'daily', 'btn-default': showing != 'daily'}"
+							type="button" class="btn">Daily</button>
+						<button ng-click="showing.type='countries'"
+							ng-class="{'btn-primary': showing.type == 'countries', 'btn-default': showing != 'countries'}"
+							type="button" class="btn">Country</button>
+						<button ng-click="showing.type='categories'"
+							ng-class="{'btn-primary': showing.type == 'categories', 'btn-default': showing != 'categories'}"
+							type="button" class="btn">Category</button>
+					</div>
+					<div class="pull-right">
+						<div class="form-group" style="display: inline-block;">
+							<select ng-model="showing.subType" class="form-control" style="height: 46px;">
+								<option selected value="1">Today</option>
+								<option value="2">Yesterday</option>
+								<option value="3">3 Days</option>
+								<option value="7">7 Days</option>
+								<option value="30">30 DaysToday</option>
+								<option value="90">90 Days</option>
+								<option value="30">This Month</option>
+								<option value="60">Last Month</option>
+								<option value="183">Last 6 Months</option>
+								<option value="360">This Year</option>
+							</select>
+						</div>
+						<button style="margin-top: -4px;" class="btn btn-default btn-lg">Refresh</button>
+						<button ng-click="showingGraph=!showingGraph" style="margin-top: -4px;"
+							class="btn btn-default btn-lg">Charts</button>
+					</div>
+					<span class="row"></span>
+					<canvas ng-show="showingGraph" height="70vh" id="line" class="chart chart-line" chart-data="data"
+						chart-labels="labels" chart-series="series" chart-options="options"
+						chart-dataset-override="datasetOverride" chart-click="onClick">
+					</canvas>
+					<div id="DataTables_Table_0_wrapper" class="dataTables_wrapper form-inline dt-bootstrap no-footer">
+						<div class="row">
+							<div class="col-sm-12">
+								<div ng-switch="showing.type">
+									<apps-report ng-switch-when="apps" subtype="showing.subType"></apps-report>
+									<daily-report ng-switch-when="daily" subtype="showing.subType"></daily-report>
+									<countries-report ng-switch-when="countries" subtype="showing.subType"></countries-report>
+									<categories-report ng-switch-when="categories" subtype="showing.subType"></categories-report>
+									<div ng-switch-default>Nothing to show</div>
+								</div>
+								
+								<!-- <table
+									class="table table-bordered table-striped js-dataTable-simple dataTable no-footer"
+									id="reports-table" role="grid" aria-describedby="DataTables_Table_0_info">
+									<thead>
+										<tr role="row">
+											<th class="sorting" tabindex="0" aria-controls="DataTables_Table_0"
+												rowspan="1" colspan="1"
+												aria-label="Name: activate to sort column ascending"
+												style="width: 200px;">
+												<span ng-if="showing.type=='apps'">App Name</span>
+												<span ng-if="showing.type=='daily'">Date</span>
+												<span ng-if="showing.type=='countries'">Country</span>
+												<span ng-if="showing.type=='categories'">Category</span>
+											</th>
+											<th class="" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1"
+												colspan="1" aria-label="Email: activate to sort column ascending"
+												style="width: 100px;">Total Users</th>
+											<th ng-if="showing.type!='daily' && showing.type!='categories'" class="" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1"
+												colspan="1" aria-label="Email: activate to sort column ascending"
+												style="width: 100px;">Active users</th>
+											<th ng-if="showing.type!='daily' && showing.type!='categories'" class="" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1"
+												colspan="1" aria-label="Email: activate to sort column ascending"
+												style="width: 100px;">Total Unsubscribe</th>
+											<th ng-if="showing.type!='categories'" class="" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1"
+												colspan="1" aria-label="Email: activate to sort column ascending"
+												style="width: 100px;">Subscribes</th>
+											<th ng-if="showing.type!='categories'" class="" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1"
+												colspan="1" aria-label="Email: activate to sort column ascending"
+												style="width: 100px;">Gains %</th>
+											<th class="" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1"
+												colspan="1" aria-label="Email: activate to sort column ascending"
+												style="width: 100px;">Unsubscribes</th>
+											<th class="" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1"
+												colspan="1" aria-label="Email: activate to sort column ascending"
+												style="width: 100px;">Loss %</th>
+											<th ng-if="showing.type!='categories'" class="" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1"
+												colspan="1" aria-label="Email: activate to sort column ascending"
+												style="width: 100px;">Growth</th>
+											<th ng-if="showing.type!='categories'" class="" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1"
+												colspan="1" aria-label="Email: activate to sort column ascending"
+												style="width: 100px;">Growth %</th>
+											<th class="" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1"
+												colspan="1" aria-label="Email: activate to sort column ascending"
+												style="width: 100px;">Total Clicks</th>
+											<th class="" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1"
+												colspan="1" aria-label="Email: activate to sort column ascending"
+												style="width: 100px;">Open Rate</th>
+										</tr>
+									</thead>
+									<tbody>
+										<tr role="row" ng-repeat="app in reportingData.apps">
+											<td class="font-w600">{{app.name}}</td>
+											<td class="">{{app.totalUsers}}</td>
+											<td ng-if="showing.type!='daily' && showing.type!='categories'"  class="">{{app.totalSubscribed}}</td>
+											<td ng-if="showing.type!='daily' && showing.type!='categories'" class="">{{app.totalUnsubscribed}}</td>
+											<td ng-if="showing.type!='categories'" class="">{{app.subscribed}}</td>
+											<td ng-if="showing.type!='categories'" class="">{{(app.subscribed/app.totalSubscribed)*100 | number:1}}</td>
+											<td class="">{{app.unsubscribed}}</td>
+											<td class="">{{app.loss | number:1}}</td>
+											<td ng-if="showing.type!='categories'" class="">{{app.growth | number:1}}</td>
+											<td ng-if="showing.type!='categories'" class="">{{app.growth/app.totalSubscribed| number:1}}</td>
+											<td class="">{{app.totalClicks}}</td>
+											<td class="">{{app.openRate | number:1}}</td>
+										</tr>
+									</tbody>
+								</table> -->
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<!-- END Blocks API -->

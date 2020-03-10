@@ -1,0 +1,116 @@
+<!-- Page Header -->
+
+<div class="content bg-gray-lighter">
+	<ol class="breadcrumb">
+		<li><a href="#!/campaign" class="link-effect">Campaigns</a></li>
+		<li>{{campaignName}}</li>
+	</ol>
+	<h1 class="page-heading push">
+		{{campaignName}} : Groups
+	</h1>
+</div>
+<!-- END Page Header -->
+
+<!-- Page Content -->
+<div class="content">
+	<!-- Blocks API, functionality is initialized in js/app.js -> uiHelpers Factory -> uiBlocks() -->
+	<div class="row">
+		<div class="col-sm-12">
+			<div class="block">
+				<div class="block-content">
+					<form ng-submit="createCampaignGroup()">
+						<div class="row">
+							<div class="form-group form-group col-xs-12 col-sm-6 col-md-4 col-lg-3">
+								<label for="targeting" class="text-white">.</label>
+								<select ng-model="campaignGroupData.group" class="form-control" id="targeting" required>
+									<option disabled selected value="">Select Groups</option>
+									<option ng-repeat="group in groups" ng-value="group._id">{{group.name}}</option>
+								</select>
+							</div>
+							<div class="form-group form-group col-xs-12 col-sm-6 col-md-4 col-lg-3">
+								<label for="sources" class="text-white">.</label>
+								<select ng-model="campaignGroupData.order" class="form-control" id="sources" required>
+									<option disabled selected value="">Select Order</option>
+									<option ng-repeat="option in range(20) track by $index" ng-value="$index+1">{{$index
+										+ 1}}</option>
+								</select>
+							</div>
+							<div class="form-group form-group col-xs-12 col-sm-6 col-md-4 col-lg-3">
+								<label for="apps" class="text-white">.</label>
+								<select ng-model="campaignGroupData.frequency" class="form-control" id="apps" required>
+									<option disabled selected value="">Select Frequency</option>
+									<option ng-repeat="option in range(10) track by $index" ng-value="$index+1">{{$index
+										+ 1}}</option>
+								</select>
+							</div>
+							<div class="form-group form-group col-xs-12 col-sm-6 col-md-4 col-lg-3">
+								<label for="capping" class="text-white">.</label>
+								<select ng-model="campaignGroupData.capping" class="form-control" id="capping" required>
+									<option disabled selected value="">Group Capping</option>
+									<option ng-repeat="option in range(21) track by $index" ng-value="$index">{{$index}}</option>
+								</select>
+							</div>
+						</div>
+						<div class="">
+							<button type="submit" class="btn btn-minw btn-default" ng-if="!isEditing">Add</button>
+							<button type="submit" class="btn btn-minw btn-default" ng-if="isEditing">Save</button>
+						</div>
+						<div class="pull-right">
+							<button type="button" ng-click="updateSorting()" class="btn btn-minw btn-success" ng-if="sortDirty">Save Sorted
+								List</button>
+							<button type="button" ng-click="resetCapping()" class="btn btn-minw btn-danger">Reset Capping</button>
+							<button type="button" ng-click="resetSchduler()" class="btn btn-minw btn-danger">Reset Scheduler</button>
+						</div>
+					</form>
+					<span class="row"></span>
+					<div id="campaignTable" class="dataTables_wrapper form-inline dt-bootstrap no-footer">
+						<div class="row">
+							<div class="col-sm-12">
+								<table class="table table-bordered table-striped js-dataTable-simple dataTable no-footer" id="DataTables_Table_0"
+								 role="grid" aria-describedby="DataTables_Table_0_info">
+									<thead>
+										<tr role="row">
+											<th class="text-center" style="width: 20px;">Order</th>
+											<th class="sorting" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1" colspan="1" aria-label="Name: activate to sort column ascending"
+											 style="width: 200px;">Group Name</th>
+											<th class="" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1" colspan="1" aria-label="Email: activate to sort column ascending"
+											 style="width: 100px;">Frequency</th>
+											<th class="" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1" colspan="1" aria-label="Email: activate to sort column ascending"
+											 style="width: 100px;">Capping</th>
+											<th class="" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1" colspan="1" aria-label="Access: activate to sort column ascending">Last
+												Sent({{timezone}})</th>
+											<th class="" style="width: 111px;" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1" colspan="1"
+											 aria-label="Access: activate to sort column ascending">Status</th>
+											<th class="text-center sorting_disabled" style="width: 81px;" rowspan="1" colspan="1" aria-label="Actions">Actions</th>
+										</tr>
+									</thead>
+									<tbody ui-sortable="sortableOptions" ng-model="campaignGroups">
+										<tr role="row" ng-repeat="campaignGroup in campaignGroups">
+											<td class="text-center">{{campaignGroup.order}}</td>
+											<td class="font-w300">{{campaignGroup.group.name}}</td>
+											<td class="">{{campaignGroup.frequency}}</td>
+											<td class="">{{campaignGroup.capping}}</td>
+											<td style="min-width: 120px;">{{parseTimezone(campaignGroup.lastSent, timezone)}}</td>
+											<td class="">
+												<label style="margin: 0px;" class="css-input switch switch-sm switch-primary">
+													<input ng-model="statusModels[$index]" type="checkbox" checked="" ng-init="statusModels[$index] = campaignGroup.active" ng-change="changeStatus(campaignGroup._id, statusModels[$index])"><span></span>
+												</label>
+											</td>
+											<td style="min-width: 170px;" class="text-center">
+												<a style="font-size: 12px;;color: inherit" href="#!/messages/{{campaignGroup.group._id}}?campaign-title={{campaignName}}&campaign-id={{cid}}&group-title={{campaignGroup.group.name}}">Messages</a>
+												|
+												<span style="font-size: 12px;cursor: pointer;" ng-click="enableEditing(campaignGroup)">Edit</span>
+												|
+												<span ng-click="deleteCampaignGroup(campaignGroup._id)" style="font-size: 12px; cursor: pointer;">Delete</span>
+											</td>
+										</tr>
+									</tbody>
+								</table>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<!-- END Blocks API -->

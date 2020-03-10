@@ -1,0 +1,284 @@
+<!-- Page Header -->
+<div class="content bg-gray-lighter">
+    <h1 class="page-heading push">
+        Campaigns
+    </h1>
+</div>
+<!-- END Page Header -->
+
+<!-- Page Content -->
+<div class="content">
+    <!-- Blocks API, functionality is initialized in js/app.js -> uiHelpers Factory -> uiBlocks() -->
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="block">
+                <div class="block-content">
+                    <form ng-submit="createCampaign()">
+                        <div class="row">
+                            <div class="form-group col-xs-12 col-sm-6 col-md-4 col-lg-3">
+                                <input type="text" ng-model="campaignData.name" class="form-control" id="searchInput" aria-describedby="searchInput"
+                                    placeholder="Campaign Name">
+                            </div>
+                            <div class="form-group col-xs-12 col-sm-6 col-md-4 col-lg-3">
+                                <input type="text" ng-model="campaignData.label" class="form-control" id="searchInput" aria-describedby="searchInput"
+                                    placeholder="Campaign Label">
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="form-group form-group col-xs-12 col-sm-6 col-md-4 col-lg-3">
+                                <label for="targeting">Targeting</label>
+                                <input ng-click="countriesVisibility = true;" ng-keyup="countriesVisibility = ($event.keyCode == 27)?false:true;" ng-focus="countriesVisibility = true;" ng-blur="selectionBlured('countriesInput', 'countriesVisibility')" class="form-control" ng-model="searchCountries" placeholder="Select Countries{{(campaignData.countries.length>0)?'('+campaignData.countries.length+')':''}}">
+                                <select ng-model="campaignData.countries" ng-blur="countriesVisibility = false;" class="custom-multi-select" ng-style="{visibility: (countriesVisibility)?'visible':'hidden'}"
+                                    multiple id="countriesInput">
+                                    <option ng-repeat="country in countries|filter:searchCountries" value="{{country.id}}">{{country.label}}</option>
+                                </select>
+                            </div>
+                            <div class="form-group form-group col-xs-12 col-sm-6 col-md-4 col-lg-3">
+                                <label for="targeting" class="text-white">.</label>
+                                <input ng-click="sourcesVisibility = true;" ng-keyup="sourcesVisibility = ($event.keyCode == 27)?false:true;" ng-focus="sourcesVisibility = true;" ng-blur="selectionBlured('sourceInput', 'sourcesVisibility')" class="form-control" ng-model="searchSources" placeholder="Select Sources{{(campaignData.sources.length>0)?'('+campaignData.sources.length+')':''}}">
+                                <select ng-model="campaignData.sources" ng-blur="sourcesVisibility = false;" class="custom-multi-select" ng-style="{visibility: (sourcesVisibility)?'visible':'hidden'}"
+                                    multiple id="sourceInput">
+                                    <option ng-repeat="source in sources|filter:searchSources" value="{{source._id}}">{{source.label}}</option>
+                                </select>
+                            </div>
+                            <div class="form-group form-group col-xs-12 col-sm-6 col-md-4 col-lg-3">
+                                <label for="targeting" class="text-white">.</label>
+                                <input ng-click="appsVisibility = true;" ng-keyup="appsVisibility = ($event.keyCode == 27)?false:true;" ng-focus="appsVisibility = true;" ng-blur="selectionBlured('appInput', 'appsVisibility')" class="form-control" ng-model="searchApps" placeholder="Select Apps{{(campaignData.apps.length>0)?'('+campaignData.apps.length+')':''}}">
+                                <select ng-model="campaignData.apps" ng-blur="appsVisibility = false;" class="custom-multi-select" ng-style="{visibility: (appsVisibility)?'visible':'hidden'}"
+                                    multiple id="appInput">
+                                    <option ng-repeat="app in apps|filter:searchApps" value="{{app._id}}">{{app.name}} (<span ng-hide="app.label==null">{{app.label}})</span> </option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <label style="margin-bottom: 25px;" class="css-input switch switch-primary col-xs-12 col-sm-12 col-md-1">
+                                <input ng-model="campaignData.advanceTargeting.enabled" type="checkbox" checked=""><span></span>
+                            </label>
+                            <span class="col-xs-3 mx-auto" style="margin-top:5px; margin-bottom: 25px;">Advance Targetting
+							</span>
+						</div>
+						<div ng-if="campaignData.advanceTargeting.enabled">
+							<div class="row">
+								<div class="form-group col-xs-6 col-sm-6 col-md-4 col-lg-3">
+									<input ng-model="campaignData.advanceTargeting.device" placeholder="Device" type="text" class="form-control" id="Device">
+								</div>
+								<div class="form-group col-xs-6 col-sm-6 col-md-4 col-lg-3">
+									<input ng-model="campaignData.advanceTargeting.brand" placeholder="Brand" type="text" class="form-control" id="Brand">
+								</div>
+								<div class="form-group col-xs-6 col-sm-6 col-md-4 col-lg-3">
+									<input ng-model="campaignData.advanceTargeting.model" placeholder="Model" type="text" class="form-control" id="Model">
+								</div>
+							</div>
+							<div class="row">
+								<div class="form-group col-xs-6 col-sm-6 col-md-4 col-lg-3">
+									<input ng-model="campaignData.advanceTargeting.region" placeholder="Region" type="text" class="form-control" id="Region">
+								</div>
+								<div class="form-group col-xs-6 col-sm-6 col-md-4 col-lg-3">
+									<input ng-model="campaignData.advanceTargeting.city" placeholder="City" type="text" class="form-control" id="City">
+								</div>
+								<div class="form-group col-xs-6 col-sm-6 col-md-4 col-lg-3">
+									<input ng-model="campaignData.advanceTargeting.carrier" placeholder="Carrier" type="text" class="form-control" id="Carrier">
+								</div>
+							</div>
+							<div class="row">
+								<div class="form-group col-xs-6 col-sm-6 col-md-4 col-lg-3">
+									<textarea ng-model="campaignData.advanceTargeting.ips" class="form-control" rows="5" id="Ips"></textarea>
+								</div>
+							</div>
+						</div>
+						<div class="row">
+                            <label style="margin-bottom: 25px;" class="css-input switch switch-primary col-xs-12 col-sm-12 col-md-1">
+                                <input ng-model="campaignData.allDay" type="checkbox" checked="" ng-true-value="false" ng-false-value="true"><span></span>
+                            </label>
+                            <span ng-if="campaignData.allDay" class="col-xs-3 mx-auto" style="margin-top:5px; margin-bottom: 25px;">24
+                                Hours
+                            </span>
+                            <span ng-click="addTimeRange()" ng-if="!campaignData.allDay" class="col-xs-3 mx-auto" style="margin-top:5px; margin-bottom: 25px; color: #5c90d2;cursor:pointer">
+                                <i class="fa fa-plus-circle"></i>
+                                Add Time
+                            </span>
+                            <div ng-if="!campaignData.allDay" class="col-sm-12 row" ng-repeat="schedule in campaignData.schedules">
+                                <div ng-if="$index == 0" class="col-xs-12 col-sm-12 col-md-2 col-lg-2">
+                                    <div class="form-group">
+                                        <select ng-model="campaignData.timezone" class="form-control" >
+                                            <option value="" selected>Select timezone</option>
+                                            <option ng-repeat="timezone in timezones" value="{{timezone}}">{{timezone}}</option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div ng-if="$index > 0" class="col-xs-12 col-sm-12 col-md-2 col-lg-2" style="padding-top: 2px;text-align: right;font-size:20px">
+                                    
+                                    <i style="cursor:pointer" ng-click="removeTimeRange($index)" class="fa fa-times-circle-o "></i>
+                                    
+                                </div>
+                                <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4">
+                                    <div class="form-group" style="display:inline-block; width:31%;">
+                                        <select ng-model="schedule.fromHour" class="form-control" >
+                                            <option ng-value="1" selected>1</option>
+                                            <option ng-value="2">2</option>
+                                            <option ng-value="3">3</option>
+                                            <option ng-value="4">4</option>
+                                            <option ng-value="5">5</option>
+                                            <option ng-value="6">6</option>
+                                            <option ng-value="7">7</option>
+                                            <option ng-value="8">8</option>
+                                            <option ng-value="9">9</option>
+                                            <option ng-value="10">10</option>
+                                            <option ng-value="11">11</option>
+                                            <option ng-value="0">12</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group" style="display:inline-block; width:31%;">
+                                        <select ng-model="schedule.fromMinute" class="form-control" >
+                                            <option ng-repeat="minute in range(60) track by $index" ng-value="{{$index}}">{{$index}}</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group" style="display:inline-block; width:31%;">
+                                        <select ng-model="schedule.fromDaylightSaving" class="form-control" >
+                                            <option ng-value="false" selected>AM</option>
+                                            <option ng-value="true">PM</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <span ng-if="!campaignData.allDay" class="col-xs-1 mx-auto" style="margin-top:5px; margin-bottom: 25px;">to</span>
+                                <div ng-if="!campaignData.allDay" class="col-xs-12 col-sm-12 col-md-4 col-lg-4">
+                                    <div class="form-group" style="display:inline-block; width:31%;">
+                                        <select ng-model="schedule.toHour" class="form-control" >
+                                            <option ng-value="1" selected>1</option>
+                                            <option ng-value="2">2</option>
+                                            <option ng-value="3">3</option>
+                                            <option ng-value="4">4</option>
+                                            <option ng-value="5">5</option>
+                                            <option ng-value="6">6</option>
+                                            <option ng-value="7">7</option>
+                                            <option ng-value="8">8</option>
+                                            <option ng-value="9">9</option>
+                                            <option ng-value="10">10</option>
+                                            <option ng-value="11">11</option>
+                                            <option ng-value="0">12</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group" style="display:inline-block; width:31%;">
+                                        <select ng-model="schedule.toMinute" class="form-control" >
+                                            <option ng-repeat="minute in range(60) track by $index" ng-value="{{$index}}">{{$index}}</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group" style="display:inline-block; width:31%;">
+                                        <select ng-model="schedule.toDaylightSaving" class="form-control" >
+                                            <option ng-value="false" selected>AM</option>
+                                            <option ng-value="true">PM</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+						</div>
+                        <div class="row">
+                            <div class="form-group col-xs-6 col-sm-6 col-md-4 col-lg-3">
+                                <label for="autoReset">Auto Reset Group Sending</label>
+                                <select ng-model="campaignData.autoReset" class="form-control" id="autoReset">
+									<option ng-value="true">Yes</option>
+									<option ng-value="false" selected>No</option>
+								</select>
+                            </div>
+                        
+                            <div class="form-group col-xs-6 col-sm-6 col-md-4 col-lg-3">
+                                <label for="frequency">Sending Frequency (every X minutes)</label>
+                                <input ng-model="campaignData.frequency" type="number" class="form-control" id="frequency">
+                            </div>
+                       
+                            <div class="form-group col-xs-6 col-sm-6 col-md-4 col-lg-3">
+                                <label for="collapsing">Collapsing</label>
+                                <input type="number" ng-model="campaignData.collapsing" class="form-control" id="collapsing">
+                            </div>
+                            <div class="form-group col-xs-6 col-sm-6 col-md-4 col-lg-3">
+                                <label for="sendingLimit">Sending limit</label>
+                                <input type="number" ng-model="campaignData.sendingLimit" class="form-control" id="sendingLimit">
+                            </div>
+                        </div>
+                        <div class="">
+                            <button ng-if="!isEditing" type="submit" class="btn btn-minw btn-default">Create</button>
+                            <button ng-if="isEditing" type="submit" class="btn btn-minw btn-default">Save</button>
+                        </div>
+                    </form>
+                    <span class="row"></span>
+                    <div id="DataTables_Table_0_wrapper" class="dataTables_wrapper form-inline dt-bootstrap no-footer">
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <table class="table table-bordered table-striped js-dataTable-simple dataTable no-footer" id="campaignTable" role="grid"
+                                    aria-describedby="campaignTable">
+                                    <thead>
+                                        <tr role="row">
+                                            <th class="sorting" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1" colspan="1" aria-label="Name: activate to sort column ascending" >Campaign Name</th>
+                                            <th class="sorting" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1" colspan="1" aria-label="Email: activate to sort column ascending"
+                                                style="width: 100px;">Countries</th>
+											<th rowspan="1" colspan="1">Label</th>
+											<th class="sorting" style="width: 111px;" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1" colspan="1" aria-label="Access: activate to sort column ascending">Status</th>
+                                            <th rowspan="1" colspan="1">Timezone</th>
+                                            <th rowspan="1" style="min-width:100px;" colspan="1">From</th>
+                                            <th rowspan="1" colspan="1">To</th>
+                                            <th rowspan="1" colspan="1">Auto Reset</th>
+                                            <th rowspan="1" colspan="1">Sending Frequency</th>
+                                            <th rowspan="1" colspan="1">Collapsing</th>
+                                            <th class="text-center sorting_disabled" style="width: 160px;" rowspan="1" colspan="1" aria-label="Actions">Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr role="row" ng-repeat="campaign in campaignList">
+                                            <td>{{campaign.name}}</td>
+                                            <td>
+                                                <span>{{campaign.countries.join(',')}}</span>
+                                            </td>
+											<td>
+                                                
+												{{campaign.label}}
+											</td>
+                                            <td>
+                                                <label style="margin: 0px;" class="css-input switch switch-sm switch-primary">
+                                                    <input ng-init="statusModels[$index]=campaign.active" ng-model="statusModels[$index]" type="checkbox" ng-change="changeStatus(campaign._id, statusModels[$index])"><span></span>
+                                                </label>
+											</td>
+											<td>
+												<div>{{campaign.timezone || 'UTC'}}</div>
+                                            </td>
+											<td>
+												<div ng-if="!campaign.allDay">
+                                                    <span ng-repeat="schedule in campaign.schedules">
+                                                        {{parseDate(schedule.fromHour, schedule.fromMinute, schedule.fromDaylightSaving) | date:'hh:mma'}}
+                                                        <br>
+                                                    </span>
+                                                </div>
+												<div ng-if="campaign.allDay">24 Hours</div>
+											</td>
+											<td >
+												<div ng-if="!campaign.allDay">
+                                                    <span ng-repeat="schedule in campaign.schedules">
+                                                        {{parseDate(schedule.toHour, schedule.toMinute, schedule.toDaylightSaving) | date:'hh:mma'}}
+                                                        <br>
+                                                    </span>
+                                                </div>
+											</td>
+											<td>{{(campaign.autoReset)?"Yes":"No"}}</td>
+											<td>{{campaign.frequency}}</td>
+											<td>{{campaign.collapsing}}</td>
+											<td style="min-width: 170px;" class="text-center">
+                                                <a style="font-size: 12px;color: inherit" ng-href="#!/campaign/groups/{{campaign._id}}?title={{campaign.name}}&timezone={{campaign.timezone}}">Groups</a>
+                                                |
+                                                <span style="font-size: 12px;cursor: pointer;" ng-click="enableEditing(campaign)">Edit</span>
+												|
+												<a style="font-size: 12px;color: inherit" ng-click="duplicate(campaign._id)">duplicate</a>
+												|
+                                                <span ng-click="deleteCampaign(campaign._id)" style="font-size: 12px;cursor: pointer">Delete</span>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+								</table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- END Blocks API -->

@@ -1,0 +1,66 @@
+<!-- Page Header -->
+<div class="content bg-gray-lighter">
+    <h1 class="page-heading push">
+        Apps
+    </h1>
+</div>
+<!-- END Page Header -->
+
+<!-- Page Content -->
+<div class="content">
+    <!-- Blocks API, functionality is initialized in js/app.js -> uiHelpers Factory -> uiBlocks() -->
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="block">
+                <div class="block-content">
+                    <form ng-submit="createApp()" class="form">
+                        <div class="row">
+                            <div class="form-group col-xs-12 col-sm-6 col-md-4 col-lg-3">
+                                <input ng-model="appData.name" required type="text" class="form-control" id="Input_AppName" aria-describedby="Input_AppID" placeholder="Input App Name">
+                            </div>
+							<div class="form-group col-xs-12 col-sm-6 col-md-4 col-lg-3">
+                                <input ng-model="appData.label" required type="text" class="form-control" id="label" aria-describedby="label" placeholder="Label">
+                            </div>
+                            
+                            <div class="form-group col-xs-12 col-sm-6 col-md-4 col-lg-3">
+                                <!-- <button type="submit" class="btn btn-minw btn-default">Add</button> -->
+                                <input type="submit" value="Add" class="btn btn-min btn-default">
+                            </div>
+                        </div>
+                    </form>
+                    <span class="row"></span>
+                    <div id="DataTables_Table_0_wrapper" class="dataTables_wrapper form-inline dt-bootstrap no-footer">
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <table class="table table-bordered table-striped js-dataTable-simple dataTable no-footer" id="DataTables_Table_0" role="grid"
+                                    aria-describedby="DataTables_Table_0_info">
+                                    <thead>
+                                        <tr role="row">
+                                            <th class="sorting" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1" colspan="1" aria-label="Name: activate to sort column ascending"
+                                                style="width: 200px;">App Name</th>
+                                            <th class="" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1" colspan="1" aria-label="Email: activate to sort column ascending"
+                                                style="width: 100px;">Label</th>
+                                            <th class="" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1" colspan="1" aria-label="Email: activate to sort column ascending"
+                                                style="width: 100px;">AppID</th>
+                                            <th class="text-center sorting_disabled" style="width: 81px;" rowspan="1" colspan="1" aria-label="Actions">Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr role="row" ng-repeat="app in apps">
+                                            <td class="font-w600">{{app.name}}</td>
+                                            <td class="">{{app.label}}</td>
+                                            <td class="">{{app._id}}</td>
+                                            <td class="text-center">
+                                                <span style="font-size: 12px; cursor: pointer;" ng-click="deleteApp(app._id)">Delete</span>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- END Blocks API -->

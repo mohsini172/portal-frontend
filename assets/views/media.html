@@ -1,0 +1,149 @@
+<!-- Page Header -->
+<div class="content bg-gray-lighter">
+    <h1 class="page-heading push">
+        Media
+    </h1>
+</div>
+<!-- END Page Header -->
+
+<!-- Page Content -->
+<div class="content">
+    <!-- Blocks API, functionality is initialized in js/app.js -> uiHelpers Factory -> uiBlocks() -->
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="block">
+                <div class="block-header">
+                    <span style="font-size: 18px;">Media Groups</span>
+                </div>
+                <div class="block-content">
+                    <form ng-submit="createMediaGroup()">
+                        <div class="row">
+                            <div class="form-group col-xs-12 col-sm-6 col-md-4 col-lg-3">
+                                <input ng-model="mediaGroupData.label" type="text" class="form-control" id="Group_Name" aria-describedby="Group_Name" placeholder="Group Name">
+                            </div>
+                            <div class="form-group col-xs-12 col-sm-6 col-md-4 col-lg-3">
+                                <select ng-model="mediaGroupData.mtype" class="form-control" id="selectApp">
+                                    <option disabled selected value="">Media Type</option>
+                                    <option>Icon</option>
+                                    <option>Badge</option>
+                                    <option>Image</option>
+                                </select>
+                            </div>
+                            <div class="form-group col-xs-12 col-sm-6 col-md-4 col-lg-3">
+                                <button ng-if = "!isEditing" type="submit" class="btn btn-minw btn-default">Create Group</button>
+                                <button ng-if = "isEditing" type="submit" class="btn btn-minw btn-default">Save Group</button>
+                            </div>
+                        </div>
+                    </form>
+                    <span class="row"></span>
+                    <div id="DataTables_Table_0_wrapper" class="dataTables_wrapper form-inline dt-bootstrap no-footer">
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <table id="media-group-table" class="table table-bordered table-striped dataTable no-footer" id="DataTables_Table_0" role="grid"
+                                    aria-describedby="DataTables_Table_0_info">
+                                    <thead>
+                                        <tr role="row">
+                                            <th class="sorting" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1" colspan="1" aria-label="Name: activate to sort column ascending"
+                                                style="width: 200px;">Label</th>
+                                            <th class="" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1" colspan="1" aria-label="Email: activate to sort column ascending"
+                                                style="width: 100px;">Type</th>
+                                            <th class="text-center sorting_disabled" style="width: 81px;" rowspan="1" colspan="1" aria-label="Actions">Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr role="row" ng-repeat="group in mediaGroups">
+                                            <td class="font-w600"><a href="#!media-groups/{{group._id}}/{{group.label}}/{{group.mtype}}">{{group.label}}</a></td>
+                                            <td class="">{{group.mtype}}</td>
+                                            <td class="text-center">
+                                                <span style="font-size: 12px;cursor: pointer" ng-click="enableEditing(group)">Edit</span>
+                                                |
+                                                <span ng-click="deleteMediaGroup(group._id)" style="font-size: 12px;cursor: pointer">Delete</span>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="block-header">
+                    <span style="font-size: 18px;">Media Files</span>
+                </div>
+                <div class="block-content">
+                    <form ng-submit="addToGroup()">
+                        <div class="row">
+                            <div class="form-group col-xs-12 col-sm-6 col-md-4 col-lg-3">
+                                <input type="text" class="form-control" id="SearchFilename" ng-model="searchedFile" aria-describedby="SearchFilename" placeholder="Search Filename">
+                            </div>
+                            <div class="form-group col-xs-12 col-sm-6 col-md-4 col-lg-2">
+                                {{searchedType}}
+                                <select class="form-control" id="selectApp" ng-model="searchedType">
+                                    <option selected value="">Media Type</option>
+                                    <option>Icons</option>
+                                    <option>Badges</option>
+                                    <option>Images</option>
+                                </select>
+                            </div>
+                            <span class="form-group col-xs-12 col-sm-12 col-md-12 col-lg-2">
+                            </span>
+                            <div class="form-group col-xs-12 col-sm-6 col-md-4 col-lg-3">
+                                <select ng-change = "addToGroupChanged(mediaData.mgId)" ng-model="mediaData.mgId" class="form-control">
+                                    <option value="" disabled selected>Add to Group</option>
+                                    <option ng-repeat="group in mediaGroups" value="{{group._id}}">{{group.label}}</option>
+                                </select>
+                            </div>
+                            <div class="form-group col-xs-12 col-sm-6 col-md-4 col-lg-2">
+                                <button type="submit" class="btn btn-minw btn-default">Add</button>
+                            </div>
+                        </div>
+                    </form>
+                    <span class="row"></span>
+                    <div id="DataTables_Table_0_wrapper" class="dataTables_wrapper form-inline dt-bootstrap no-footer">
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <table id="media-table" class="table table-bordered table-striped dataTable no-footer" id="DataTables_Table_0" role="grid"
+                                    aria-describedby="DataTables_Table_0_info">
+                                    <thead>
+                                        <tr role="row">
+                                            <th class="sorting" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1" colspan="1" aria-label="Name: activate to sort column ascending"
+                                                style="width: 50px;">
+                                                <input style="width:100%;" type="checkbox" id="selectAll" ng-change = "toggleAllCheckBoxes(allSelector)" ng-model="allSelector">
+                                            </th>
+                                            <th class="" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1" colspan="1" aria-label="Email: activate to sort column ascending"
+                                                style="width: 100px;">Filename</th>
+                                            <th class="" style="width: 111px;" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1" colspan="1"
+                                                aria-label="Access: activate to sort column ascending">API
+                                                Type
+                                            </th>
+                                            <th class="text-center sorting_disabled" style="width: 81px;" rowspan="1" colspan="1" aria-label="Actions">Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <!-- <div style="display: flex;flex-wrap: wrap;">
+                                            <div ng-repeat="file in checkboxesModels">
+                                                <div ng-if="file">{{file}}</div>
+                                                <div ng-if="!file" style="background-color: red;">{{file}}</div>
+                                            </div>
+                                        </div> -->
+                                        <tr role="row" ng-repeat="row in (filteredMedia = (media|filter: {file: searchedFile, type: searchedType}| limitTo:50))">
+                                            <td class="font-w600">
+                                                <span style="position:absolute;opacity:0;z-index:-1;">{{row.file}}</span>
+                                                <input style="width:100%;" type="checkbox" ng-model="checkboxesModels[row.file]">
+                                            </td>
+                                            <td class="">{{row.file}}</td>
+                                            <td class="">{{row.type}}</td>
+                                            <td class="text-center">
+                                                <a target="_blank" style="font-size: 12px;" href="https://pushmedia.s3.amazonaws.com/{{row.type.toLowerCase()}}/{{row.file}}">Preview</a>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                                <div style="height: 30px"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- END Blocks API -->
