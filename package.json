@@ -2,5 +2,7 @@
   "name": "js-gsoy1u",
   "version": "0.0.0",
   "private": true,
-  "dependencies": {}
+  "dependencies": {
+    "express": "^4.17.1"
+  }
 }
